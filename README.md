@@ -36,7 +36,15 @@ This project was created as an experiment to explore and optimize workflows for 
 
 ## 🔧 Prerequisites
 
-### System
+### Minimum System Requirements
+
+-   **CPU**: 4+ cores recommended
+-   **RAM**: 8GB minimum, 16GB+ recommended
+-   **GPU**: NVIDIA GPU with 8GB+ VRAM
+-   **Storage**: 20GB+ SSD space
+-   **OS**: Linux (Ubuntu 20.04+ recommended)
+
+### System Dependencies
 
 -   Docker >= 20.10
 -   Docker Compose >= 2.0
@@ -196,6 +204,15 @@ OLLAMA_MODELS=/home/ollama/.ollama/models
 
 ## 📚 Model Features and Installation
 
+### Quick Model Selection Guide
+
+Choose the right model based on your needs:
+
+-   **Code Generation & Analysis**: DeepSeek Coder, CodeLlama
+-   **General Purpose Tasks**: Llama 2, Mixtral
+-   **Lightweight Options**: Phi, Mistral
+-   **Chat & Assistance**: Neural Chat
+
 ### Available Models
 
 1. **DeepSeek Coder**
@@ -263,6 +280,7 @@ OLLAMA_MODELS=/home/ollama/.ollama/models
         ```
 
 7. **Neural Chat**
+
     - **Description**: Optimized for conversations and assistance.
     - **Use Case**: Perfect for chatbots and interactive assistance.
     - **Installation**:
@@ -270,28 +288,134 @@ OLLAMA_MODELS=/home/ollama/.ollama/models
         ./scripts/ollama-dev.sh pull neural-chat
         ```
 
-### How to Use Installed Models
+### 💻 System Requirements by Model
 
--   **List Installed Models**:
+#### Hardware Recommendations
 
-    ```bash
-    ./scripts/ollama-dev.sh models
-    ```
+-   **Entry Level**: RTX 3060 (8GB VRAM)
 
--   **Switch Between Models**:
-    Update the model name in your API requests or scripts to use the desired model.
+    -   Suitable for: Small models (7B), Phi, Mistral
+    -   System RAM: 16GB minimum
+    -   Storage: 20GB+ SSD
 
--   **Example API Request**:
-    ```bash
-    curl http://localhost:11434/api/generate \
-      -d '{
-        "model": "deepseek-coder:6.7b",
-        "prompt": "Explain this Python code: def fibonacci(n): return n if n <= 1 else fibonacci(n-1) + fibonacci(n-2)",
-        "stream": false
-      }'
-    ```
+-   **Mid Range**: RTX 3080/3090 (12-24GB VRAM)
 
-### Customize resources
+    -   Suitable for: Medium models (13B), DeepSeek Coder, CodeLlama 13B
+    -   System RAM: 32GB recommended
+    -   Storage: 50GB+ SSD
+
+-   **High End**: RTX 4090/A5000 (24GB+ VRAM)
+    -   Suitable for: Large models (34B+), Mixtral, Llama 2 70B
+    -   System RAM: 64GB recommended
+    -   Storage: 100GB+ SSD
+
+#### Model-Specific Requirements
+
+##### Code Models
+
+| Model          | Version | GPU RAM | System RAM | Storage |
+| -------------- | ------- | ------- | ---------- | ------- |
+| DeepSeek Coder | 6.7b    | 16GB    | 32GB       | 15GB    |
+| DeepSeek Coder | 1.3b    | 4GB     | 8GB        | 5GB     |
+| CodeLlama      | 34b     | 32GB    | 64GB       | 60GB    |
+| CodeLlama      | 13b     | 16GB    | 32GB       | 25GB    |
+| CodeLlama      | 7b      | 8GB     | 16GB       | 15GB    |
+
+##### General Purpose Models
+
+| Model   | Version | GPU RAM | System RAM | Storage |
+| ------- | ------- | ------- | ---------- | ------- |
+| Llama 2 | 70b     | 48GB    | 96GB       | 140GB   |
+| Llama 2 | 13b     | 16GB    | 32GB       | 25GB    |
+| Llama 2 | 7b      | 8GB     | 16GB       | 15GB    |
+| Mixtral | 8x7b    | 24GB    | 48GB       | 45GB    |
+| Phi     | base    | 4GB     | 8GB        | 5GB     |
+| Mistral | base    | 8GB     | 16GB       | 15GB    |
+
+#### Optimization Tips
+
+1. **Memory Management**:
+
+    - Use quantized versions when available
+    - Adjust context length based on needs
+    - Close unnecessary applications
+
+2. **Performance Optimization**:
+
+    - Use SSDs for model storage
+    - Keep drivers and CUDA updated
+    - Monitor GPU temperatures
+
+3. **Resource Allocation**:
+    - Set appropriate memory limits in docker-compose.yml
+    - Configure GPU utilization in .env
+    - Use background processing for large models
+
+### Managing Models
+
+#### List Available Models
+
+```bash
+./scripts/ollama-dev.sh models
+```
+
+#### Remove a Model
+
+```bash
+# Using the API
+curl -X DELETE http://localhost:11434/api/delete -d '{"name": "model-name"}'
+```
+
+#### Switch Between Models
+
+Update the model name in your API requests or scripts to use the desired model.
+
+#### API Examples
+
+1. **Code Explanation**
+
+```bash
+# Ask for code explanation
+curl -X POST http://localhost:11434/api/generate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "deepseek-coder:6.7b",
+    "prompt": "Explain this Python code: def fibonacci(n): return n if n <= 1 else fibonacci(n-1) + fibonacci(n-2)",
+    "stream": false
+  }'
+```
+
+2. **General Conversation**
+
+```bash
+# Chat with the model
+curl -X POST http://localhost:11434/api/generate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "neural-chat",
+    "prompt": "What is machine learning?",
+    "stream": true
+  }'
+```
+
+3. **Code Generation**
+
+```bash
+# Generate code based on description
+curl -X POST http://localhost:11434/api/generate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "codellama:13b",
+    "prompt": "Write a Python function to sort a list using quicksort",
+    "stream": false
+  }'
+```
+
+**Note**:
+
+-   Use `"stream": true` for real-time responses
+-   Use `"stream": false` for complete responses
+-   Always include the appropriate headers### Customize resources
 
 Edit `docker-compose.yml`:
 

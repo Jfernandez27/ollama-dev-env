@@ -15,12 +15,16 @@ services:
         deploy:
             resources:
                 limits:
-                    memory: 8G
+                    memory: ${MEMORY_LIMIT:-16G}
+                    cpus: ${CPU_LIMIT:-4.0}
                 reservations:
                     devices:
                         - driver: nvidia
                           count: 1
-                          capabilities: [gpu]
+                          capabilities: [gpu, compute, utility]
+                          options:
+                              memory: ${GPU_MEMORY_LIMIT:-8G}
+                              memory-reservation: ${GPU_MEMORY_LIMIT:-8G}
         volumes:
             - ollama-data:/root/.ollama
             - ./models:/root/models # Para modelos locales
