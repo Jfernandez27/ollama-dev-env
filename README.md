@@ -2,6 +2,16 @@
 
 Optimized development environment for Ollama with GPU support (RTX 3050) and DeepSeek Coder.
 
+## What is Ollama?
+
+Ollama is an open-source project that allows you to run large language models (LLMs) locally. It provides:
+
+-   🔒 **Local Processing**: Run AI models on your own hardware
+-   🚀 **High Performance**: Optimized for modern GPUs
+-   🎯 **Easy Integration**: Simple REST API for applications
+-   📚 **Multiple Models**: Support for various open-source models
+-   💻 **Cross-Platform**: Works on Linux, macOS, and Windows
+
 This project was created as an experiment to explore and optimize workflows for working with large language models (LLMs) locally. By leveraging Docker and NVIDIA GPU acceleration, it ensures high performance and seamless integration with modern development workflows. Whether you're building AI-powered applications, experimenting with LLMs, or contributing to open-source AI projects, this environment has you covered.
 
 ## 📋 Features
@@ -184,17 +194,102 @@ OLLAMA_HOST=0.0.0.0
 OLLAMA_MODELS=/home/ollama/.ollama/models
 ```
 
-### Available models
+## 📚 Model Features and Installation
 
-```bash
-# List installed models
-./scripts/ollama-dev.sh models
+### Available Models
 
-# Install specific model
-./scripts/ollama-dev.sh pull deepseek-coder:1.3b
-./scripts/ollama-dev.sh pull codellama:7b
-./scripts/ollama-dev.sh pull llama2:7b
-```
+1. **DeepSeek Coder**
+
+    - **Description**: Specialized for code assistance, including generation, explanation, and debugging.
+    - **Use Case**: Perfect for developers and language learning.
+    - **Versions**: 6.7b, 1.3b
+    - **Installation**:
+        ```bash
+        ./scripts/ollama-dev.sh pull deepseek-coder:6.7b  # Full version
+        ./scripts/ollama-dev.sh pull deepseek-coder:1.3b  # Lightweight version
+        ```
+
+2. **CodeLlama**
+
+    - **Description**: Versatile model for code tasks across multiple programming languages.
+    - **Use Case**: Excellent for code generation, refactoring, and documentation.
+    - **Versions**: 34b, 13b, 7b
+    - **Installation**:
+        ```bash
+        ./scripts/ollama-dev.sh pull codellama:34b  # Best performance
+        ./scripts/ollama-dev.sh pull codellama:13b  # Balanced performance/resources
+        ./scripts/ollama-dev.sh pull codellama:7b   # Lightweight
+        ```
+
+3. **Llama 2**
+
+    - **Description**: General-purpose model with strong reasoning capabilities.
+    - **Use Case**: Great for writing, analysis, and planning.
+    - **Versions**: 70b, 13b, 7b
+    - **Installation**:
+        ```bash
+        ./scripts/ollama-dev.sh pull llama2:70b  # Maximum performance
+        ./scripts/ollama-dev.sh pull llama2:13b  # Balanced performance/resources
+        ./scripts/ollama-dev.sh pull llama2:7b   # Lightweight
+        ```
+
+4. **Mixtral**
+
+    - **Description**: Powerful model with excellent reasoning capabilities.
+    - **Use Case**: Perfect for complex tasks and detailed analysis.
+    - **Versions**: 8x7b
+    - **Installation**:
+        ```bash
+        ./scripts/ollama-dev.sh pull mixtral  # Base model
+        ./scripts/ollama-dev.sh pull mixtral-instruct  # Instruction-optimized
+        ```
+
+5. **Phi**
+
+    - **Description**: Compact model with strong performance on technical tasks.
+    - **Use Case**: Great for development and technical documentation.
+    - **Installation**:
+        ```bash
+        ./scripts/ollama-dev.sh pull phi
+        ```
+
+6. **Mistral**
+
+    - **Description**: Efficient in both general and technical language tasks.
+    - **Use Case**: Versatile for various types of tasks.
+    - **Installation**:
+        ```bash
+        ./scripts/ollama-dev.sh pull mistral
+        ```
+
+7. **Neural Chat**
+    - **Description**: Optimized for conversations and assistance.
+    - **Use Case**: Perfect for chatbots and interactive assistance.
+    - **Installation**:
+        ```bash
+        ./scripts/ollama-dev.sh pull neural-chat
+        ```
+
+### How to Use Installed Models
+
+-   **List Installed Models**:
+
+    ```bash
+    ./scripts/ollama-dev.sh models
+    ```
+
+-   **Switch Between Models**:
+    Update the model name in your API requests or scripts to use the desired model.
+
+-   **Example API Request**:
+    ```bash
+    curl http://localhost:11434/api/generate \
+      -d '{
+        "model": "deepseek-coder:6.7b",
+        "prompt": "Explain this Python code: def fibonacci(n): return n if n <= 1 else fibonacci(n-1) + fibonacci(n-2)",
+        "stream": false
+      }'
+    ```
 
 ### Customize resources
 
