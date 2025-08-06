@@ -1,0 +1,61 @@
+services:
+    ollama:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: ollama-dev
+        restart: unless-stopped
+        environment:
+            - OLLAMA_HOST=0.0.0.0
+            - OLLAMA_MODELS=/root/.ollama/models
+            - NVIDIA_VISIBLE_DEVICES=all
+            - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+        ports:
+            - '11434:11434'
+        deploy:
+            resources:
+                limits:
+                    memory: 8G
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          count: 1
+                          capabilities: [gpu]
+        volumes:
+            - ollama-data:/root/.ollama
+            - ./models:/root/models # Para modelos locales
+            - ./scripts:/root/scripts # Para scripts de desarrollo
+        networks:
+            - ollama-network
+        logging:
+            driver: json-file
+            options:
+                max-size: '10m'
+                max-file: '3'
+
+    # Opcional: Open WebUI para interfaz gráfica
+    open-webui:
+        image: ghcr.io/open-webui/open-webui:main
+        container_name: open-webui
+        restart: unless-stopped
+        ports:
+            - '3000:8080'
+        environment:
+            - OLLAMA_BASE_URL=http://ollama:11434
+            - WEBUI_SECRET_KEY=your-secret-key-here
+        volumes:
+            - open-webui-data:/app/backend/data
+        depends_on:
+            - ollama
+        networks:
+            - ollama-network
+
+volumes:
+    ollama-data:
+        driver: local
+    open-webui-data:
+        driver: local
+
+networks:
+    ollama-network:
+        driver: bridge

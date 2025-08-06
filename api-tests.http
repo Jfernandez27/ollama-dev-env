@@ -1,0 +1,125 @@
+### Variables de entorno
+@baseUrl = http://localhost:11434
+@model = deepseek-coder:6.7b
+
+### Test de conectividad
+GET {{baseUrl}}/api/tags
+
+### Listar modelos disponibles
+GET {{baseUrl}}/api/tags
+
+### === EJEMPLOS DE DESARROLLO CON DEEPSEEK CODER ===
+
+### 1. Completar código Python
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "def fibonacci(n):\n    # Complete esta función para calcular fibonacci\n    ",
+  "stream": false,
+  "options": {
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "stop": ["\n\n"]
+  }
+}
+
+### 2. Explicar código JavaScript
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "Explica qué hace este código JavaScript:\n\nconst debounce = (func, wait) => {\n  let timeout;\n  return function executedFunction(...args) {\n    const later = () => {\n      clearTimeout(timeout);\n      func(...args);\n    };\n    clearTimeout(timeout);\n    timeout = setTimeout(later, wait);\n  };\n};",
+  "stream": false
+}
+
+### 3. Revisar y mejorar código
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "Revisa este código Python y sugiere mejoras:\n\n```python\ndef process_users(users):\n    result = []\n    for i in range(len(users)):\n        if users[i]['active'] == True:\n            result.append(users[i]['name'].upper())\n    return result\n```\n\nProporciona una versión mejorada y explica los cambios.",
+  "stream": false
+}
+
+### 4. Generar tests unitarios
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "Genera tests unitarios en Python usando pytest para esta función:\n\n```python\ndef calculate_discount(price, discount_percent, min_order=100):\n    if price < min_order:\n        return price\n    discount = price * (discount_percent / 100)\n    return price - discount\n```",
+  "stream": false
+}
+
+### 5. Optimizar consulta SQL
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "Optimiza esta consulta SQL y explica las mejoras:\n\nSELECT u.name, p.title, c.name as category\nFROM users u, posts p, categories c\nWHERE u.id = p.user_id AND p.category_id = c.id AND u.active = 1 AND p.published = 1\nORDER BY p.created_at DESC;",
+  "stream": false
+}
+
+### 6. Debugging - encontrar errores
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "Encuentra y corrige los errores en este código JavaScript:\n\n```javascript\nfunction calculateTotal(items) {\n    let total = 0;\n    for (let i = 0; i <= items.length; i++) {\n        total += items[i].price * items[i].quantity;\n    }\n    return total.toFixed(2);\n}\n\nfunction processOrder(order) {\n    if (order.items.length = 0) {\n        return null;\n    }\n    return calculateTotal(order.items);\n}\n```",
+  "stream": false
+}
+
+### 7. Chat conversacional para desarrollo
+POST {{baseUrl}}/api/chat
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Eres un asistente de programación experto. Ayuda con código, debugging, mejores prácticas y arquitectura de software."
+    },
+    {
+      "role": "user", 
+      "content": "Estoy diseñando una API REST para un blog. ¿Qué endpoints recomendarías y qué estructura de datos usar?"
+    }
+  ],
+  "stream": false
+}
+
+### 8. Generar documentación
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "Genera documentación JSDoc completa para esta clase:\n\n```javascript\nclass UserManager {\n    constructor(database) {\n        this.db = database;\n        this.cache = new Map();\n    }\n\n    async getUser(id) {\n        if (this.cache.has(id)) {\n            return this.cache.get(id);\n        }\n        const user = await this.db.findById(id);\n        this.cache.set(id, user);\n        return user;\n    }\n\n    async createUser(userData) {\n        const user = await this.db.create(userData);\n        this.cache.set(user.id, user);\n        return user;\n    }\n}\n```",
+  "stream": false
+}
+
+### 9. Refactoring de código
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "Refactoriza este código para que sea más limpio y mantenible:\n\n```python\ndef handle_user_request(request_type, user_data, db_connection):\n    if request_type == 'create':\n        if 'email' in user_data and 'password' in user_data:\n            cursor = db_connection.cursor()\n            cursor.execute(\"INSERT INTO users (email, password) VALUES (?, ?)\", (user_data['email'], user_data['password']))\n            db_connection.commit()\n            cursor.close()\n            return True\n        else:\n            return False\n    elif request_type == 'update':\n        if 'id' in user_data and 'email' in user_data:\n            cursor = db_connection.cursor()\n            cursor.execute(\"UPDATE users SET email = ? WHERE id = ?\", (user_data['email'], user_data['id']))\n            db_connection.commit()\n            cursor.close()\n            return True\n        else:\n            return False\n    elif request_type == 'delete':\n        if 'id' in user_data:\n            cursor = db_connection.cursor()\n            cursor.execute(\"DELETE FROM users WHERE id = ?\", (user_data['id'],))\n            db_connection.commit()\n            cursor.close()\n            return True\n        else:\n            return False\n    else:\n        return False\n```",
+  "stream": false
+}
+
+### 10. Streaming response (para ver respuesta en tiempo real)
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "prompt": "Crea una función en Python que implemente el patrón Observer para un sistema de notificaciones",
+  "stream": true
+}
